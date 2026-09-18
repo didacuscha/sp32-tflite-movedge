@@ -1,0 +1,21 @@
+{
+  "test_accuracy": 1.0,
+  "test_macro_f1": 1.0,
+  "features": [
+    "Accel_x",
+    "Accel_y",
+    "Accel_z",
+    "w_x",
+    "w_y",
+    "w_z"
+  ],
+  "classes": [
+    "Mov00",
+    "Mov01",
+    "Mov02",
+    "Mov03",
+    "Mov04"
+  ],
+  "train_samples": 7945,
+  "test_samples": 1987
+}

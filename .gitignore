@@ -17,6 +17,7 @@ venv/
 saved_model/
 logs/
 checkpoints/
+models/representative_samples.npy
 
 # OS
 .DS_Store

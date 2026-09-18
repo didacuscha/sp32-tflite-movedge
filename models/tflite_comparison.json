@@ -1,0 +1,17 @@
+{
+  "float32": {
+    "path": "movement_classifier_float.tflite",
+    "size_bytes": 4204,
+    "test_accuracy": 1.0,
+    "test_macro_f1": 1.0,
+    "avg_inference_latency_us_host": 1.8189481627443318
+  },
+  "int8": {
+    "path": "movement_classifier_int8.tflite",
+    "size_bytes": 4456,
+    "test_accuracy": 1.0,
+    "test_macro_f1": 1.0,
+    "avg_inference_latency_us_host": 1.740752391671953
+  },
+  "size_reduction_pct": -5.994291151284492
+}
