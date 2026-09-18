@@ -2,14 +2,16 @@
 Captura datos etiquetados del acelerometro/giroscopio de la ESP32 (MPU6050)
 por el puerto serial y los guarda en data.csv.
 
-Requisito previo: firmware de src/main.cpp ya flasheado en la ESP32, e
-imprimiendo lineas "accel_x;accel_y;accel_z;gyro_x;gyro_y;gyro_z;temp".
+Requisito previo: firmware de firmware/src/main.cpp ya flasheado en la ESP32
+(via `pio run -t upload` desde firmware/), e imprimiendo lineas
+"accel_x;accel_y;accel_z;gyro_x;gyro_y;gyro_z;temp".
 
 Cierre cualquier monitor serial (PlatformIO, Arduino IDE, screen, etc.)
 antes de correr este script -- el puerto serial solo lo puede tener
 abierto un proceso a la vez.
 """
 
+import os
 import serial
 import time
 import pandas as pd
@@ -17,6 +19,7 @@ import numpy as np
 
 SERIAL_PORT = "/dev/cu.usbserial-110"
 BAUDRATE = 115200
+OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 
 COL_NAMES = ["Accel_x", "Accel_y", "Accel_z", "w_x", "w_y", "w_z", "Temp"]
 
@@ -96,7 +99,8 @@ if __name__ == "__main__":
 
     if data_frames:
         final_df = pd.concat(data_frames, ignore_index=True)
-        csv_filename = "training_data.csv"
+        os.makedirs(OUTPUT_DIR, exist_ok=True)
+        csv_filename = os.path.join(OUTPUT_DIR, "training_data_new.csv")
         final_df.to_csv(csv_filename, index=False)
         print(f"Datos guardados en {csv_filename}")
         print(final_df["Category"].value_counts())
