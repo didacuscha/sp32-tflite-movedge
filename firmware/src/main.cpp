@@ -48,6 +48,7 @@ void setup() {
   if (!oled_present) {
     Serial.println("SSD1306 no encontrado (revise conexion I2C); continuando solo con Serial.");
   } else {
+    Serial.println("SSD1306 OK");
     display.clearDisplay();
     display.setTextSize(1);
     display.setTextColor(SSD1306_WHITE);
