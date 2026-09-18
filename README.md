@@ -46,38 +46,16 @@ comparison/reuse and are not part of the new pipeline.
 
 ## Implementation plan
 
-1. **Repo & environment setup** *(done)* — GitHub repo, PlatformIO scaffold,
-   reused assets copied in.
-2. **Hardware bring-up** — wire ESP32 + MPU6050 (+ OLED), confirm serial output
-   of the 7 raw features, matching the previous project's setup.
-3. **Data capture** — reuse/extend `training/data_acquisition.py` to build a
-   labeled dataset for Mov00–Mov04 (or custom gestures), following the
-   controlled-routine protocol from the guide. Decide whether to reuse
-   `data/data.csv` as-is or recapture for a larger/cleaner set.
-4. **Preprocessing & feature engineering** — normalization/scaling, optional
-   windowing (previous project used raw per-sample features; this is a good
-   place to try more powerful features, e.g. rolling stats or magnitude,
-   since we're no longer limited to a linear model computable by hand).
-5. **Model training in TensorFlow** — build and train a small Keras model
-   (dense network, or 1D-conv over a short window) on the labeled data;
-   evaluate accuracy/F1/confusion matrix like the reference script did.
-6. **Conversion to TensorFlow Lite** — convert the trained Keras model to
-   `.tflite`, once as float32 and once with post-training quantization
-   (dynamic range and/or full-int8 with a representative dataset).
-7. **Optimization comparison** — benchmark size, latency, and accuracy of
-   float vs. quantized models (on the host, e.g. with the TFLite Python
-   interpreter) to produce the comparison the guide asks for.
-8. **On-device inference (TFLite Micro)** — embed the chosen `.tflite` model
-   as a C array in `firmware/`, wire it into a TFLite Micro
-   `MicroInterpreter`, and replace `mc_classify()` in the FreeRTOS pipeline
-   with real-time inference on the ESP32.
-9. **Test protocol execution** — run the guide's controlled routine (5×15s
-   movements) + randomized routine (30s in 5s windows), logging predicted
-   class and inference score per sample to a `raw` file.
-10. **Results & report** — assemble `data.csv` in the exact deliverable
-    format (Feature1–7, Clase Real, Clase Predecida, Resultado Inferencia),
-    and write the report covering preprocessing choices, model definition,
-    and the optimization comparison metrics.
-11. **Commit checkpoints** — commit after each stage above (data capture,
-    training, conversion, firmware integration, protocol results) instead of
-    one final dump, so progress is recoverable at every step.
+1. ~~**Repo & environment setup**~~ — GitHub repo, PlatformIO scaffold, reused assets copied in.
+2. ~~**Hardware bring-up**~~ — MPU6050 + OLED verified (found and fixed a real wiring issue on the OLED).
+3. **Data capture** — *skipped*: reused `data/training_data.csv` from `movedge` as-is.
+4. ~~**Preprocessing**~~ — `StandardScaler` fit in Python, applied before the model boundary (see REPORT.md for why it can't live inside the TF graph without breaking int8 quantization).
+5. ~~**Model training in TensorFlow**~~ — small Keras MLP, 100% held-out test accuracy.
+6. ~~**Conversion to TensorFlow Lite**~~ — float32 and int8 variants (`training/convert_to_tflite.py`).
+7. ~~**Optimization comparison**~~ — found & fixed an int8 quantization bug from mixed-scale features; documented size/accuracy tradeoffs in `models/tflite_comparison.json` and REPORT.md.
+8. ~~**On-device inference (TFLite Micro)**~~ — int8 model embedded and running live on the ESP32 (`firmware/src/main.cpp`).
+9. ~~**Test protocol execution**~~ — full guide routine (9×15s structured + 6×5s random) run interactively via `protocol/run_test_protocol.py`. **85.85% accuracy / 0.8517 macro-F1** — consistent with `movedge`'s own delivered result (87.18%).
+10. ~~**Results & report**~~ — see `REPORT.md` and `deliverables/` (`main.cpp` + `data.csv` in the guide's exact format).
+11. **Commit checkpoints** — done throughout; see commit history for the stage-by-stage progression.
+
+See `REPORT.md` for the full writeup (preprocessing rationale, model definition, quantization comparison, protocol results, confusion matrix, and lessons learned).
