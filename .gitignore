@@ -1,0 +1,26 @@
+# PlatformIO
+firmware/.pio/
+firmware/.vscode/
+.pio/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# TensorFlow / training artifacts (intermediate; final .tflite models are committed under models/)
+*.h5
+*.keras
+saved_model/
+logs/
+checkpoints/
+
+# OS
+.DS_Store
+
+# Protocol run outputs (raw captures generated per run, not source)
+protocol/results/*
+!protocol/results/.gitkeep
